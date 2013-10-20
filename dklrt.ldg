@@ -1,0 +1,11 @@
+2013-10-14 Payee1
+    Asset:Cash:Euro                           €50.00
+    Expense:Education
+
+2013-10-17 Payee2
+    Liability:CreditCard:Mc                   €54.63
+    Expense:Groceries
+
+2013-10-19 Payee3
+    Liability:CreditCard:Mc                    €5.25
+    Expense:Groceries
