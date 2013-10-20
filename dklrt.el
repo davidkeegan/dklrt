@@ -1,4 +1,4 @@
-;;; dklrc.el --- Ledger Recurring Transactions.
+;;; dklrt.el --- Ledger Recurring Transactions.
 
 ;; Copyright: (c) David Keegan 2011-2013.
 ;; Licence: FSF GPLv3.
@@ -6,7 +6,7 @@
 ;; Version: 0.1
 ;; Package-Requires: ((emacs "24.1"))
 ;; Keywords: ledger ledger-cli recurring periodic automatic
-;; URL: https://github.com/davidkeegan/dklrc
+;; URL: https://github.com/davidkeegan/dklrt
 
 ;;; Commentary:
 
@@ -15,4 +15,4 @@
 
 ;;; Code:
 
-(provide 'dklrc)
+(provide 'dklrt)

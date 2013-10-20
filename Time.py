@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Time and Date Utilities.
+# Time and Date Utilities (dklrt).
 # (c) David Keegan 2011-08-06.
 import sys, re
 from time import *

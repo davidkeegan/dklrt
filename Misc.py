@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Miscellaneous Utilities.
+# Miscellaneous Utilities (dklrt).
 # (c) David Keegan 2011-06-28.
 
 from __future__ import print_function

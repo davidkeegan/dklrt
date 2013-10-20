@@ -1,7 +1,7 @@
 \input texinfo @c -*-texinfo-*-
 
 @c %**start of header
-@setfilename dklrc.info
+@setfilename dklrt.info
 @settitle Do List Mode 1.0
 @c %**end of header
 
@@ -14,7 +14,7 @@
 @c updates the node pointers, which texinfmt.el needs.
 
 @copying
-This manual is for emacs package dklrc version 1.0.
+This manual is for emacs package dklrt version 1.0.
 
 Copyright @copyright{} 2010–2013 David Keegan.
 
@@ -24,7 +24,7 @@ Foundation GNU Free Documentation Licence.
 
 @dircategory Emacs misc features
 @direntry
-* Ledger Recurring Transactions: (dklrc).
+* Ledger Recurring Transactions: (dklrt).
 @end direntry
 
 @documentencoding UTF-8

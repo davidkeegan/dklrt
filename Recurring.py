@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Recurring Transactions for Ledger.
+# Recurring Transactions for Ledger (dklrt).
 # (c) Kevin Keegan 2011-07-20.
 # (c) David Keegan 2011-08-06.
 
