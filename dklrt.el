@@ -16,8 +16,14 @@
 ;;; Code:
 
 (defvar dklrt-RecurringDateShift "1w"
- "Recurring transactions posted up to today plus specified period.
+"Recurring transactions posted up to today plus specified period.
   In do list format: <integer>y|m|d|w|h.")
+
+(defvar dklrt-LedgerFileSuffix "ldg"
+"Suffix of Ledger File (excluding period).")
+
+(defvar dklrt-RecurringConfigFileSuffix "rec"
+"Suffix of Recurring Transactions Config File (excluding period).")
 
 (defconst dklrt-PackageDirectory
  (if load-file-name
@@ -27,17 +33,15 @@
 (defun dklrt-AppendRecurring()
 "Appends recurring transactions to the current ledger buffer/file."
  (interactive)
- (dklrt-BufferIs "ldg" t)
- (if (buffer-modified-p)
-  (error "Buffer has changed! Please save it first!"))
+ (dklrt-AppendRecurringOk t)
 
  (message "Appending recurring transactions...")
  (let*
   ((Lfn (buffer-file-name))
-   (Lfd (file-name-directory Lfn))
+   (Cfn (dklrt-RecurringConfigFileName Lfn))
    (Pfn (expand-file-name "Recurring.py" dklrt-PackageDirectory))
    (Td (dkmisc-TimeApplyShift (dkmisc-DateToText) dklrt-RecurringDateShift))
-   (Sc (format "python %s %s %s" Pfn Lfn Td))
+   (Sc (format "python %s %s %s %s" Pfn Lfn Td Cfn))
    (So (shell-command-to-string Sc)))
 
   ; Check for error.
@@ -52,14 +56,57 @@
   (save-buffer)
   (end-of-buffer)))
 
-(defun dklrt-BufferIs(Filetype &optional Throw)
+(defun dklrt-AppendRecurringOk(&optional Throw)
+"Return non nil if ok to append recurring transactions.
+The current buffer must be unmodified, in ledger-mode, and a
+Recurring Transactions Config File must exist for the current
+file."
+ (and
+  (dklrt-IsLedgerMode Throw)
+  (dklrt-Unmodified Throw)
+  (dklrt-LedgerFileExists Throw)
+  (dklrt-RecurringConfigFileExists Throw)))
+
+(defun dklrt-IsLedgerMode(&optional Throw)
  "True if current buffer is a ledger buffer."
  (let*
-  ((Rv
-    (and (string-match (concat "\\" Filetype "$") (buffer-file-name))
-     (equal mode-name "Ledger"))))
-  (and (not Rv) Throw
-   (error "Not a \".%s\" file in ledger mode!" Filetype))
+  ((Rv (equal mode-name "Ledger")))
+ (and (not Rv) Throw
+  (error "Current buffer is not in ledger mode!"))
   Rv))
+
+(defun dklrt-Unmodified(&optional Throw)
+ "True if current buffer is unmodified."
+ (let*
+  ((Rv (not (buffer-modified-p))))
+  (and (not Rv) Throw
+   (error "Current buffer has changed! Please save it first!"))
+  Rv))
+
+(defun dklrt-LedgerFileExists(&optional Throw)
+"Return t if the ledger file exists otherwise nil."
+ (let*
+  ((Lfn (buffer-file-name))
+   (Rv (and Lfn (file-exists-p Lfn))))
+  (and (not Rv) Throw
+   (error "No such Ledger File: \"%s\"!" Lfn))
+  Rv))
+
+(defun dklrt-RecurringConfigFileExists(&optional Throw)
+"Return t if the Recurring Config File exists, otherwise nil."
+ (let*
+  ((Lfn (buffer-file-name))
+   (Cfn (dklrt-RecurringConfigFileName Lfn))
+   (Rv (and Cfn (file-exists-p Cfn))))
+  (and (not Rv) Throw
+   (error "No such Recurring Config File: \"%s\"!" Cfn))
+  Rv))
+
+(defun dklrt-RecurringConfigFileName(LedgerFileName)
+"Returns the corresponding recurring configuration file name.
+ Removes the suffix (if any) and then appends the recurring
+ suffix as per 'dklrt-RecurringConfigFileSuffix'."
+ (concat (file-name-sans-extension LedgerFileName) "."
+  dklrt-RecurringConfigFileSuffix))
 
 (provide 'dklrt)

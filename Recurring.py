@@ -99,11 +99,7 @@ class Transactions:
     TargetDateInSeconds=None,
     ConfigFileName=None):
       self._Lfn = LedgerFileName
-      if (self._Lfn is None) and ('LEDGER' in os.environ):
-         self._Lfn = os.environ['LEDGER']
       self._Cfn = ConfigFileName
-      if self._Cfn is None:
-         self._Cfn = self._Lfn.replace('.ldg', '.rec')
       self._Tdis = TargetDateInSeconds
       if self._Tdis is None:
          self._Tdis = Time.DateToday()
