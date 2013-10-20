@@ -1,4 +1,4 @@
-dklrt
-=====
 
-Ledger Recurring Transactiions.
+An add-on to ledger-mode which inserts recurring transactions to
+the current file.
+
