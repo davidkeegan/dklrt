@@ -4,7 +4,7 @@
 ;; Licence: FSF GPLv3.
 ;; Author: David Keegan <dksw@eircom.net>
 ;; Version: 0.1
-;; Package-Requires: ((emacs "24.1"))
+;; Package-Requires: ((ldg-mode "20130908.1357") (emacs "24.1"))
 ;; Keywords: ledger ledger-cli recurring periodic automatic
 ;; URL: https://github.com/davidkeegan/dklrt
 
