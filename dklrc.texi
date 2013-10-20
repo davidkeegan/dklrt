@@ -1,0 +1,102 @@
+\input texinfo @c -*-texinfo-*-
+
+@c %**start of header
+@setfilename dklrc.info
+@settitle Do List Mode 1.0
+@c %**end of header
+
+@syncodeindex fn cp
+@syncodeindex vr cp
+@syncodeindex ky cp
+
+@c Before release, run C-u C-c C-u C-a
+@c (texinfo-all-menus-update with a prefix arg). This
+@c updates the node pointers, which texinfmt.el needs.
+
+@copying
+This manual is for emacs package dklrc version 1.0.
+
+Copyright @copyright{} 2010–2013 David Keegan.
+
+May be redistributed under the terms of the Free Software
+Foundation GNU Free Documentation Licence.
+@end copying
+
+@dircategory Emacs misc features
+@direntry
+* Ledger Recurring Transactions: (dklrc).
+@end direntry
+
+@documentencoding UTF-8
+
+@iftex
+@finalout
+@end iftex
+
+@macro dkcmditem{key, key2, command}
+@item @kbd{\key\}@tie{} (@kbd{\key2\}) (@code{\command\})
+@end macro
+
+@macro dkcmd{key, key2, command}
+@kbd{\key\}@tie{} (@kbd{\key2\}) (@code{\command\})
+@end macro
+
+@macro dkcmdidx{key, key2, command}
+@kindex \key\
+@kindex \key2\
+@findex \command\
+@kbd{\key\}@tie{} (@kbd{\key2\}) (@code{\command\})
+@end macro
+
+@macro dktag{text}
+@samp{\text\}
+@end macro
+
+@titlepage
+@title Ledger Recurring Transactions 0.1
+@author David Keegan
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+@contents
+
+@ifnottex
+@node Top
+@top Ledger Recurring Transactions
+@end ifnottex
+
+@menu
+* Introduction::
+* Index::
+@end menu
+
+@node Introduction
+@chapter Introduction
+
+@menu
+* Overview::
+* Getting Started::
+* Known Issues::
+* History::
+@end menu
+
+@node Overview
+@section Overview
+
+@node Getting Started
+@section Getting Started
+
+@node Known Issues
+@section Known Issues
+
+@node History
+@section History
+
+This package was written between 2011-06-08 and 2011-08-17.
+
+@node Index
+@chapter Index
+@printindex cp
+
+@bye

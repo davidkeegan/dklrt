@@ -1,0 +1,1 @@
+(dklrc :fetcher github :repo "davidkeegan/dklrc" :files ("*.el" "*.texi" "dir" "*.py" "*.pyc"))
