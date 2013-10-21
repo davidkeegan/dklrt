@@ -15,9 +15,16 @@
 
 ;;; Code:
 
+(defvar dklrt-SortAfterAppend nil
+"If t, sort buffer after append to ensure recurring transactions are
+positioned by date.")
+
+(defvar dklrt-PythonProgram "python"
+"Python interpreter to be run.")
+
 (defvar dklrt-RecurringDateShift "1w"
 "Recurring transactions posted up to today plus specified period.
-  In do list format: <integer>y|m|d|w|h.")
+ In do list format: <integer>y|m|d|w|h.")
 
 (defvar dklrt-LedgerFileSuffix "ldg"
 "Suffix of Ledger File (excluding period).")
@@ -30,6 +37,9 @@
   (file-name-directory load-file-name)
   nil))
 
+(or dklrt-PackageDirectory
+ (setq dklrt-PackageDirectory "/opt/dk/emacs/dklrt-20131020.2138/"))
+
 (defun dklrt-AppendRecurring()
 "Appends recurring transactions to the current ledger buffer/file."
  (interactive)
@@ -41,20 +51,30 @@
    (Cfn (dklrt-RecurringConfigFileName Lfn))
    (Pfn (expand-file-name "Recurring.py" dklrt-PackageDirectory))
    (Td (dkmisc-TimeApplyShift (dkmisc-DateToText) dklrt-RecurringDateShift))
-   (Sc (format "python %s %s %s %s" Pfn Lfn Td Cfn))
-   (So (shell-command-to-string Sc)))
+   (Sc (format "%s %s %s %s %s" dklrt-PythonProgram Pfn Lfn Td Cfn)))
 
-  ; Check for error.
-  (and (> (length So) 0) (error So))
+   (message "Invoking: \"%s\"..." Sc)
+   (let*
+    ((Fl (point-max))
+     (So (shell-command-to-string Sc)))
 
-  ; Sync buffer with (possibly) altered file.
-  ; NB: Suppress mode reinitialisation to avoid infinite loop.
-  (revert-buffer t t t)
+    ; Check for error.
+    (and (> (length So) 0) (error So))
 
-  ; Ensure transactons are in date order.
-  (ledger-sort-buffer)
-  (save-buffer)
-  (end-of-buffer)))
+    ; Sync buffer with (possibly) altered file.
+    ; NB: Suppress mode reinitialisation to avoid infinite loop.
+    (revert-buffer t t t)
+    
+    ; Transactions were appended?
+    (if (> (point-max) Fl)
+     (progn
+      (if dklrt-SortAfterAppend
+       (progn
+        (message "Sorting buffer transactions by date...")
+        (ledger-sort-buffer)))
+
+      (message "Saving ledger buffer...") 
+      (save-buffer))))))
 
 (defun dklrt-AppendRecurringOk(&optional Throw)
 "Return non nil if ok to append recurring transactions.
@@ -63,6 +83,7 @@ Recurring Transactions Config File must exist for the current
 file."
  (and
   (dklrt-IsLedgerMode Throw)
+  (dklrt-NotRecurringConfigFile Throw)
   (dklrt-Unmodified Throw)
   (dklrt-LedgerFileExists Throw)
   (dklrt-RecurringConfigFileExists Throw)))
@@ -73,6 +94,16 @@ file."
   ((Rv (equal mode-name "Ledger")))
  (and (not Rv) Throw
   (error "Current buffer is not in ledger mode!"))
+  Rv))
+
+(defun dklrt-NotRecurringConfigFile(&optional Throw)
+ "True if current buffer is not a Recurring Config File."
+ (let*
+  ((Fne (file-name-extension (buffer-file-name)))
+   (Rv (not (string= Fne dklrt-RecurringConfigFileSuffix))))
+
+  (and (not Rv) Throw
+   (error "Cannot append recurring transactions to Config File!"))
   Rv))
 
 (defun dklrt-Unmodified(&optional Throw)
