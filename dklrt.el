@@ -15,42 +15,72 @@
 
 ;;; Code:
 
-(defvar dklrt-SortAfterAppend nil
-"If t, sort buffer after append to ensure recurring transactions are
-positioned by date.")
+(require 'dkmisc)
 
-(defvar dklrt-PythonProgram "python"
-"Python interpreter to be run.")
+;;;###autoload
+(defgroup dklrt nil
+"Customisation of dklrt package (Ledger Recurring Transactions)."
+ :tag "dklrt"
+ :group 'dk)
 
-(defvar dklrt-RecurringDateShift "1w"
-"Recurring transactions posted up to today plus specified period.
- In do list format: <integer>y|m|d|w|h.")
+(defcustom dklrt-SortAfterAppend nil
+"Controls positioning of appended recurring transactions.
+If non-nil, sort the ledger buffer after recurring transactions
+have been appended. This ensures the recurring transactions are
+positioned by date. Note: the positions of non-recurring
+transactions will probably be affected."
+ :tag "dklrt-SortAfterAppend"
+ :type '(boolean))
 
-(defvar dklrt-LedgerFileSuffix "ldg"
-"Suffix of Ledger File (excluding period).")
+(defcustom dklrt-PythonProgram "python"
+"The Python interpreter to be run.
+The default assumes python is on the PATH."
+ :tag "dklrt-PythonProgram"
+ :type '(string))
 
-(defvar dklrt-RecurringConfigFileSuffix "rec"
-"Suffix of Recurring Transactions Config File (excluding period).")
+(defcustom dklrt-AppendBefore "1w"
+"Controls when a recurring transaction is actually appended.
+The value is a period do list format: <integer><y|m|d|w|h>. A
+recurring transaction is appended when the current date/time is
+greater than or equal to the configured transaction date minus
+the specified period. If nil or empty, the recurring transaction
+is appended without anticipation on or after the configured
+transaction date."
+ :tag "dklrt-AppendBefore"
+ :type '(string))
+
+(defcustom dklrt-LedgerFileSuffix "ldg"
+"Suffix of Ledger File (excluding period)."
+ :tag "dklrt-LedgerFileSuffix"
+ :type '(string))
+
+(defcustom dklrt-RecurringConfigFileSuffix "rec"
+"Suffix of Recurring Transactions Config File (excluding period)."
+ :tag "dklrt-RecurringConfigFileSuffix"
+ :type '(string))
 
 (defconst dklrt-PackageDirectory
  (if load-file-name
   (file-name-directory load-file-name)
   nil))
 
-;DkTbd:
+; Hard-coded alternative value for debug only.
 (or dklrt-PackageDirectory 
- (setq dklrt-PackageDirectory "/opt/dk/emacs/dklrt-20131028.821/"))
+ (setq dklrt-PackageDirectory "/opt/dk/emacs/dklrt-20131028.838/"))
 
+;;;###autoload
 (defun dklrt-SetCcKeys()
 "Bind \C-cr to dklrt-AppendRecurring.
 To invoke, add this function to ledger-mode-hook."
  (define-key (current-local-map) "\C-cr" 'dklrt-AppendRecurring))
 
+;;;###autoload
 (defun dklrt-AppendRecurringMaybe()
 "Call dklrt_AppendRecurring(), but only if appropriate."
  (interactive)
  (if (dklrt-AppendRecurringOk) (dklrt-AppendRecurring)))
 
+;;;###autoload
 (defun dklrt-AppendRecurring()
 "Appends recurring transactions to the current ledger buffer/file."
  (interactive)
@@ -61,7 +91,8 @@ To invoke, add this function to ledger-mode-hook."
   ((Lfn (buffer-file-name))
    (Cfn (dklrt-RecurringConfigFileName Lfn))
    (Pfn (expand-file-name "Recurring.py" dklrt-PackageDirectory))
-   (Td (dkmisc-TimeApplyShift (dkmisc-DateToText) dklrt-RecurringDateShift))
+   (Td (dkmisc-TimeApplyShift (dkmisc-DateToText)
+    (or dklrt-AppendBefore "0h")))
    (Sc (format "%s %s %s %s %s" dklrt-PythonProgram Pfn Lfn Td Cfn)))
 
    (message "Invoking: \"%s\"..." Sc)
@@ -87,6 +118,7 @@ To invoke, add this function to ledger-mode-hook."
       (message "Saving ledger buffer...") 
       (save-buffer))))))
 
+;;;###autoload
 (defun dklrt-AppendRecurringOk(&optional Throw)
 "Return non nil if ok to append recurring transactions.
 The current buffer must be unmodified, in ledger-mode, and a
@@ -99,6 +131,7 @@ file."
   (dklrt-LedgerFileExists Throw)
   (dklrt-RecurringConfigFileExists Throw)))
 
+;;;###autoload
 (defun dklrt-IsLedgerMode(&optional Throw)
  "True if current buffer is a ledger buffer."
  (let*
