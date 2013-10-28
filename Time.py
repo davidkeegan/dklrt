@@ -23,9 +23,9 @@ def _Throw(Msg): Misc.Throw(Msg, ModuleName)
 def DateParse(Datestr):
    """Converts a date string to seconds since the epoch."""
    Fs = DateFormat;
-   if length(Datestr) > 16 : Fs = DateFormatHms;
-   elif length(Datestr) > 13 : Fs = DateFormatHm;
-   elif length(Datestr) > 10 : Fs = DateFormatH;
+   if len(Datestr) > 16 : Fs = DateFormatHms;
+   elif len(Datestr) > 13 : Fs = DateFormatHm;
+   elif len(Datestr) > 10 : Fs = DateFormatH;
    return mktime(strptime(Datestr, Fs))
 
 def DateToText(Seconds):

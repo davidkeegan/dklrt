@@ -70,7 +70,7 @@ transaction date."
 
 ; Hard-coded alternative value for debug only.
 (or dklrt-PackageDirectory 
- (setq dklrt-PackageDirectory "/opt/dk/emacs/dklrt-20131028.1025/"))
+ (setq dklrt-PackageDirectory "/opt/dk/emacs/dklrt-20131028.1129/"))
 
 ;;;###autoload
 (defun dklrt-SetCcKeys()
