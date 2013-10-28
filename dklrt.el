@@ -11,9 +11,10 @@
 ;;; Commentary:
 
 ;; An add-on to ledger-mode which appends recurring transactions to
-;; the current ledger file. Recurring transactions are configured in a
-;; separate file which conforms to ledger file format and resides in
-;; the same directory as the ledger file.
+;; the current ledger file, usually on entry to ledger-mode. Recurring
+;; transactions are configured in a separate file which conforms to
+;; ledger file format and resides in the same directory as the ledger
+;; file.
 
 ;;; Code:
 
@@ -22,7 +23,7 @@
 
 ;;;###autoload
 (defgroup dklrt nil
- "Customisation of dklrt package (Ledger Recurring Transactions)."
+ "Package dklrt (Ledger Recurring Transactions)."
  :tag "dklrt"
  :group 'dk)
 
@@ -41,7 +42,7 @@ The default assumes python is on the PATH."
  :tag "dklrt-PythonProgram"
  :type '(string))
 
-(defcustom dklrt-AppendBefore "1w"
+(defcustom dklrt-AppendBefore "3d"
  "Controls when a recurring transaction is actually appended.
 The value is a period do list format: <integer><y|m|d|w|h>. A
 recurring transaction is appended when the current date/time is
@@ -69,7 +70,7 @@ transaction date."
 
 ; Hard-coded alternative value for debug only.
 (or dklrt-PackageDirectory 
- (setq dklrt-PackageDirectory "/opt/dk/emacs/dklrt-20131028.954/"))
+ (setq dklrt-PackageDirectory "/opt/dk/emacs/dklrt-20131028.1025/"))
 
 ;;;###autoload
 (defun dklrt-SetCcKeys()
@@ -94,9 +95,11 @@ To invoke, add this function to `ledger-mode-hook'."
   ((Lfn (buffer-file-name))
    (Cfn (dklrt-RecurringConfigFileName Lfn))
    (Pfn (expand-file-name "Recurring.py" dklrt-PackageDirectory))
-   (Td (dkmisc-TimeApplyShift (dkmisc-DateToText)
-    (or dklrt-AppendBefore "0h")))
-   (Sc (format "%s %s %s %s %s" dklrt-PythonProgram Pfn Lfn Td Cfn)))
+   (AppendBefore
+    (if (> (length dklrt-AppendBefore) 0) dklrt-AppendBefore "0h"))
+   (Td (dkmisc-TimeApplyShift (dkmisc-DateToText) AppendBefore))
+   (Sc (format "\"%s\" \"%s\" \"%s\" \"%s\"  \"%s\""
+    dklrt-PythonProgram Pfn Lfn Td Cfn)))
 
    (message "Invoking: \"%s\"..." Sc)
    (let*

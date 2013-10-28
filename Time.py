@@ -12,6 +12,9 @@ ReDate = '\d{4}%s\d{1,2}%s\d{1,2}' % (ReDateSep, ReDateSep)
 RePeriod = '(\d+)([ymwd])'
 
 DateFormat = '%Y-%m-%d'
+DateFormatH = DateFormat + ' %H';
+DateFormatHm = DateFormatH + ':%M';
+DateFormatHms = DateFormatHm + ':%S';
 
 SecPerDay = 24 * 60 * 60
 
@@ -19,7 +22,11 @@ def _Throw(Msg): Misc.Throw(Msg, ModuleName)
 
 def DateParse(Datestr):
    """Converts a date string to seconds since the epoch."""
-   return mktime(strptime(Datestr, DateFormat))
+   Fs = DateFormat;
+   if length(Datestr) > 16 : Fs = DateFormatHms;
+   elif length(Datestr) > 13 : Fs = DateFormatHm;
+   elif length(Datestr) > 10 : Fs = DateFormatH;
+   return mktime(strptime(Datestr, Fs))
 
 def DateToText(Seconds):
    # Round seconds to integer first as we're truncating the time
