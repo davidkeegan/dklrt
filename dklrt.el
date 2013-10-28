@@ -3,28 +3,31 @@
 ;; Copyright: (c) David Keegan 2011-2013.
 ;; Licence: FSF GPLv3.
 ;; Author: David Keegan <dksw@eircom.net>
-;; Version: 0.1
-;; Package-Requires: ((ldg-mode "20130908.1357") (emacs "24.1"))
+;; Version: 1.0
+;; Package-Requires: ((dkmisc "0.5") (ldg-mode "20130908.1357") (emacs "24.1"))
 ;; Keywords: ledger ledger-cli recurring periodic automatic
 ;; URL: https://github.com/davidkeegan/dklrt
 
 ;;; Commentary:
 
-;; An add-on to ledger-mode which inserts recurring transactions to
-;; the current file.
+;; An add-on to ledger-mode which appends recurring transactions to
+;; the current ledger file. Recurring transactions are configured in a
+;; separate file which conforms to ledger file format and resides in
+;; the same directory as the ledger file.
 
 ;;; Code:
 
 (require 'dkmisc)
+(require 'ledger "ledger-mode")
 
 ;;;###autoload
 (defgroup dklrt nil
-"Customisation of dklrt package (Ledger Recurring Transactions)."
+ "Customisation of dklrt package (Ledger Recurring Transactions)."
  :tag "dklrt"
  :group 'dk)
 
 (defcustom dklrt-SortAfterAppend nil
-"Controls positioning of appended recurring transactions.
+ "Controls positioning of appended recurring transactions.
 If non-nil, sort the ledger buffer after recurring transactions
 have been appended. This ensures the recurring transactions are
 positioned by date. Note: the positions of non-recurring
@@ -33,13 +36,13 @@ transactions will probably be affected."
  :type '(boolean))
 
 (defcustom dklrt-PythonProgram "python"
-"The Python interpreter to be run.
+ "The Python interpreter to be run.
 The default assumes python is on the PATH."
  :tag "dklrt-PythonProgram"
  :type '(string))
 
 (defcustom dklrt-AppendBefore "1w"
-"Controls when a recurring transaction is actually appended.
+ "Controls when a recurring transaction is actually appended.
 The value is a period do list format: <integer><y|m|d|w|h>. A
 recurring transaction is appended when the current date/time is
 greater than or equal to the configured transaction date minus
@@ -50,12 +53,12 @@ transaction date."
  :type '(string))
 
 (defcustom dklrt-LedgerFileSuffix "ldg"
-"Suffix of Ledger File (excluding period)."
+ "Suffix of Ledger File (excluding period)."
  :tag "dklrt-LedgerFileSuffix"
  :type '(string))
 
 (defcustom dklrt-RecurringConfigFileSuffix "rec"
-"Suffix of Recurring Transactions Config File (excluding period)."
+ "Suffix of Recurring Transactions Config File (excluding period)."
  :tag "dklrt-RecurringConfigFileSuffix"
  :type '(string))
 
@@ -66,23 +69,23 @@ transaction date."
 
 ; Hard-coded alternative value for debug only.
 (or dklrt-PackageDirectory 
- (setq dklrt-PackageDirectory "/opt/dk/emacs/dklrt-20131028.838/"))
+ (setq dklrt-PackageDirectory "/opt/dk/emacs/dklrt-20131028.954/"))
 
 ;;;###autoload
 (defun dklrt-SetCcKeys()
-"Bind \C-cr to dklrt-AppendRecurring.
-To invoke, add this function to ledger-mode-hook."
+ "Bind \C-cr to `dklrt-AppendRecurring'.
+To invoke, add this function to `ledger-mode-hook'."
  (define-key (current-local-map) "\C-cr" 'dklrt-AppendRecurring))
 
 ;;;###autoload
 (defun dklrt-AppendRecurringMaybe()
-"Call dklrt_AppendRecurring(), but only if appropriate."
+ "Call `dklrt_AppendRecurring', but only if appropriate."
  (interactive)
  (if (dklrt-AppendRecurringOk) (dklrt-AppendRecurring)))
 
 ;;;###autoload
 (defun dklrt-AppendRecurring()
-"Appends recurring transactions to the current ledger buffer/file."
+ "Append recurring transactions to the current ledger buffer/file."
  (interactive)
  (dklrt-AppendRecurringOk t)
 
@@ -120,10 +123,10 @@ To invoke, add this function to ledger-mode-hook."
 
 ;;;###autoload
 (defun dklrt-AppendRecurringOk(&optional Throw)
-"Return non nil if ok to append recurring transactions.
-The current buffer must be unmodified, in ledger-mode, and a
+ "Return non nil if ok to append recurring transactions.
+The current buffer must be unmodified, in `ledger-mode', and a
 Recurring Transactions Config File must exist for the current
-file."
+ledger file. If THROW, call error() instead of returning nil."
  (and
   (dklrt-IsLedgerMode Throw)
   (dklrt-NotRecurringConfigFile Throw)
@@ -133,7 +136,8 @@ file."
 
 ;;;###autoload
 (defun dklrt-IsLedgerMode(&optional Throw)
- "True if current buffer is a ledger buffer."
+ "Return t if current buffer is a ledger buffer.
+If THROW, call `error' instead of returning nil."
  (let*
   ((Rv (equal mode-name "Ledger")))
  (and (not Rv) Throw
@@ -141,7 +145,8 @@ file."
   Rv))
 
 (defun dklrt-NotRecurringConfigFile(&optional Throw)
- "True if current buffer is not a Recurring Config File."
+ "Return t if current buffer is not a Recurring Config File.
+If THROW, call `error' instead of returning nil."
  (let*
   ((Fne (file-name-extension (buffer-file-name)))
    (Rv (not (string= Fne dklrt-RecurringConfigFileSuffix))))
@@ -151,7 +156,8 @@ file."
   Rv))
 
 (defun dklrt-Unmodified(&optional Throw)
- "True if current buffer is unmodified."
+ "Return t if current buffer is unmodified.
+If THROW, call `error' instead of returning nil."
  (let*
   ((Rv (not (buffer-modified-p))))
   (and (not Rv) Throw
@@ -159,7 +165,8 @@ file."
   Rv))
 
 (defun dklrt-LedgerFileExists(&optional Throw)
-"Return t if the ledger file exists otherwise nil."
+ "Return t if the ledger file exists.
+If THROW, call `error' instead of returning nil."
  (let*
   ((Lfn (buffer-file-name))
    (Rv (and Lfn (file-exists-p Lfn))))
@@ -168,7 +175,8 @@ file."
   Rv))
 
 (defun dklrt-RecurringConfigFileExists(&optional Throw)
-"Return t if the Recurring Config File exists, otherwise nil."
+ "Return t if the Recurring Config File exists.
+If THROW, call `error' instead of returning nil."
  (let*
   ((Lfn (buffer-file-name))
    (Cfn (dklrt-RecurringConfigFileName Lfn))
@@ -178,9 +186,10 @@ file."
   Rv))
 
 (defun dklrt-RecurringConfigFileName(LedgerFileName)
-"Returns the corresponding recurring configuration file name.
- Removes the suffix (if any) and then appends the recurring
- suffix as per 'dklrt-RecurringConfigFileSuffix'."
+ "Return the corresponding recurring configuration file name.
+Remove the suffix (if any) from LEDGERFILENAME and then append
+the recurring suffix as configured via
+`dklrt-RecurringConfigFileSuffix'."
  (concat (file-name-sans-extension LedgerFileName) "."
   dklrt-RecurringConfigFileSuffix))
 

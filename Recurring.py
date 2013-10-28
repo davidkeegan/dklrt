@@ -19,7 +19,7 @@ class Transaction:
       self._Dis = None      # Date in Seconds (since epoch).
       self._Ds = None       # Actual Date Separator.
       self._Period = None   # Period String.
-      self._Al = []        # Additional Lines (after date).
+      self._Al = []         # Additional Lines (after date).
       if not Line is None: self._Set(Line)
 
    def __repr__(self):
