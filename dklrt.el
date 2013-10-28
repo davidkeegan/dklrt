@@ -42,7 +42,7 @@ The default assumes python is on the PATH."
  :tag "dklrt-PythonProgram"
  :type '(string))
 
-(defcustom dklrt-AppendBefore "3d"
+(defcustom dklrt-AppendBefore "1d"
  "Controls when a recurring transaction is actually appended.
 The value is a period do list format: <integer><y|m|d|w|h>. A
 recurring transaction is appended when the current date/time is
@@ -70,7 +70,7 @@ transaction date."
 
 ; Hard-coded alternative value for debug only.
 (or dklrt-PackageDirectory 
- (setq dklrt-PackageDirectory "/opt/dk/emacs/dklrt-20131028.1133/"))
+ (setq dklrt-PackageDirectory (concat (getenv "rel"))))
 
 ;;;###autoload
 (defun dklrt-SetCcKeys()

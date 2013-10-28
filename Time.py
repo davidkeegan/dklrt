@@ -27,7 +27,7 @@ def DateTimeParse(DateTimeStr):
    """
    Dts = re.sub(ReDateTimeSep, '', DateTimeStr);
    if len(Dts) < 8:
-      _Throw('Bad Date/Time string: "%s"!', DateTimeStr)
+      _Throw('Bad Date/Time string: "%s"!' % DateTimeStr)
    while len(Dts) < 14: Dts = Dts + "0";
    return mktime(strptime(Dts, DateTimeFormat))
 
@@ -41,9 +41,8 @@ def DateToday():
 
 def DateAddPeriod(Seconds, Periodstr):
    """Adds the period to the Seconds (a date)."""
-
    Match = re.match(RePeriod, Periodstr)
-   if not Match: _Throw("Bad Period String: %s!", Periodstr)
+   if not Match: _Throw("Bad Period String: %s!" % Periodstr)
    Count = int(Match.group(1))
    Unit = Match.group(2)
 
