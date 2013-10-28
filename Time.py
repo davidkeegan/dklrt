@@ -9,24 +9,27 @@ import Misc
 ModuleName = __name__
 ReDateSep = '[-/]'
 ReDate = '\d{4}%s\d{1,2}%s\d{1,2}' % (ReDateSep, ReDateSep)
-RePeriod = '(\d+)([ymwd])'
+RePeriod = '(\d+)([ymwdh])'
 
 DateFormat = '%Y-%m-%d'
-DateFormatH = DateFormat + ' %H';
-DateFormatHm = DateFormatH + ':%M';
-DateFormatHms = DateFormatHm + ':%S';
 
-SecPerDay = 24 * 60 * 60
+ReDateTimeSep = "[-/: ]";
+DateTimeFormat = '%Y%m%d%H%M%S'
+
+SecPerHour = 60
+SecPerDay = 24 * SecPerHour * SecPerHour
 
 def _Throw(Msg): Misc.Throw(Msg, ModuleName)
 
-def DateParse(Datestr):
-   """Converts a date string to seconds since the epoch."""
-   Fs = DateFormat;
-   if len(Datestr) > 16 : Fs = DateFormatHms;
-   elif len(Datestr) > 13 : Fs = DateFormatHm;
-   elif len(Datestr) > 10 : Fs = DateFormatH;
-   return mktime(strptime(Datestr, Fs))
+def DateTimeParse(DateTimeStr):
+   """Converts a date(/time) string to seconds since the epoch.
+      Assumes zeroes for missing time components.
+   """
+   Dts = re.sub(ReDateTimeSep, '', DateTimeStr);
+   if len(Dts) < 8:
+      _Throw('Bad Date/Time string: "%s"!', DateTimeStr)
+   while len(Dts) < 14: Dts = Dts + "0";
+   return mktime(strptime(Dts, DateTimeFormat))
 
 def DateToText(Seconds):
    # Round seconds to integer first as we're truncating the time
@@ -34,7 +37,7 @@ def DateToText(Seconds):
    return strftime(DateFormat, localtime(round(Seconds)))
 
 def DateToday():
-   return DateParse(DateToText(time()))
+   return DateTimeParse(DateToText(time()))
 
 def DateAddPeriod(Seconds, Periodstr):
    """Adds the period to the Seconds (a date)."""
@@ -49,6 +52,7 @@ def DateAddPeriod(Seconds, Periodstr):
    elif Unit== 'm': Rv = DateAddMonths(Rv, Count)
    elif Unit == 'w': Rv = Rv + (Count * SecPerDay * 7)
    elif Unit == 'd': Rv = Rv + (Count * SecPerDay)
+   elif Unit == 'h': Rv = Rv + (Count * SecPerHour)
    else: _Throw('Bad Period Unit: "%s"!' % Unit)
    return Rv
 

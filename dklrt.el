@@ -70,7 +70,7 @@ transaction date."
 
 ; Hard-coded alternative value for debug only.
 (or dklrt-PackageDirectory 
- (setq dklrt-PackageDirectory "/opt/dk/emacs/dklrt-20131028.1129/"))
+ (setq dklrt-PackageDirectory "/opt/dk/emacs/dklrt-20131028.1133/"))
 
 ;;;###autoload
 (defun dklrt-SetCcKeys()
@@ -97,7 +97,7 @@ To invoke, add this function to `ledger-mode-hook'."
    (Pfn (expand-file-name "Recurring.py" dklrt-PackageDirectory))
    (AppendBefore
     (if (> (length dklrt-AppendBefore) 0) dklrt-AppendBefore "0h"))
-   (Td (dkmisc-TimeApplyShift (dkmisc-DateToText) AppendBefore))
+   (Td (dkmisc-TimeApplyShift (dkmisc-DateTimeToText) AppendBefore))
    (Sc (format "\"%s\" \"%s\" \"%s\" \"%s\"  \"%s\""
     dklrt-PythonProgram Pfn Lfn Td Cfn)))
 

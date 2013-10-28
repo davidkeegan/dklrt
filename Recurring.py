@@ -61,7 +61,7 @@ class Transaction:
       Match = re.match(self._ReTxStart, Line)
       if Match:
          self._Date = Match.group(1)
-         self._Dis = Time.DateParse(self._Date)
+         self._Dis = Time.DateTimeParse(self._Date)
          self._Ds = Match.group(2)
          self._Period = Match.group(3)
          Dlen = len(Match.group(0))
@@ -170,7 +170,7 @@ class Transactions:
 def main(Argv=None):
    if Argv is None: Argv = sys.argv
    Lfn = None if len(Argv) < 1 else Argv[0]
-   Tdis = None if len(Argv) < 2 else Time.DateParse(Argv[1])
+   Tdis = None if len(Argv) < 2 else Time.DateTimeParse(Argv[1])
    Cfn = None if len(Argv) < 3 else Argv[2]
    Rts = Transactions(Lfn, Tdis, Cfn)
    Rts.Post()
