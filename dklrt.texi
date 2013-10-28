@@ -68,6 +68,8 @@ Foundation GNU Free Documentation Licence.
 
 @menu
 * Introduction::
+* Configuration File::
+* Operations::
 * Index::
 @end menu
 
@@ -84,6 +86,14 @@ Foundation GNU Free Documentation Licence.
 @node Overview
 @section Overview
 
+An add-on to ledger-mode, this package appends recurring
+transactions to the current ledger file, usually on entry
+to @code{ledger-mode}.
+
+Recurring transactions are configured in a separate file
+which conforms to ledger file format, and resides in the
+same directory as the ledger file.
+
 @node Getting Started
 @section Getting Started
 
@@ -94,20 +104,134 @@ add this line to your emacs profile:
 (add-hook 'ledger-mode-hook 'dklrt-AppendRecurringMaybe)
 @end lisp
 
-To bind \C-cr to dklrt-AppendRecurring in ledger-mode only,
-add this line to your emacs profile (optional).
+To bind \C-cr to dklrt-AppendRecurring while in ledger-mode
+only, add this line to your emacs profile (optional):
 
 @lisp
 (add-hook 'ledger-mode-hook 'dklrt-SetCcKeys)
 @end lisp
 
+If you want to have recurring transactions positioned by date in
+the ledger file, add this line to your emacs profile (optional):
+
+(setq dklrt-SortAfterAppend t)
+
+Note that as this causes the ledger buffer to be sorted, it
+may, as a side-effect, change the positions of non-recurring
+transactions.
+
 @node Known Issues
 @section Known Issues
+
+@enumerate
+@item
+DkTbd: Only ISO Dates are supported: YYYY-MM-DD.
+
+@item
+Depends on some python code which is included in the package
+(and requires that python is installed on the system).
+@end enumerate
 
 @node History
 @section History
 
 This package was written between 2011-06-08 and 2011-08-17.
+
+@node Configuration File
+@chapter Configuration File
+
+Recurring transactions for a particular ledger file are
+configured in a separate file. The configuration file is in
+the same directory as the ledger file, and its filename is
+the same as that of the ledger file except that the ledger
+file suffix is replaced by @file{.rec} (configurable).
+
+A recurring transactions configuration file contains one or
+more transactions in ledger file format, but with the
+following restrictions on the initial (date/payee) line of
+the transaction:
+
+@enumerate
+@item
+The transaction date must be in ISO format: YYYY-MM-DD.
+DkTbd.
+
+@item
+Automated transactions (beginning with ``='' are not
+supported.
+
+@item
+Auxiliary dates (date1=date2) are not supported.
+
+@item
+A transaction state/clear flag (after the date) is not
+permitted.
+
+@item
+
+A transaction repetition period must follow the date in the
+position where a transaction ``code'' would normally occur.
+It must contain a (parenthesised) repetition period in the
+following format:
+
+@cindex time interval
+@verbatim
+(<Digits><Unit>)
+@end verbatim
+
+Where:
+
+@table @code
+@item Digits
+An unsigned decimal integer period count.
+
+@item Unit
+A single character from the following y (year), m (month) w
+(week), d (day), specifying the period unit and following
+immediately after the integer without intervening space.
+@end table
+
+@end enumerate
+
+@node Operations
+@chapter Operations
+
+The main entry point is function
+@code{dklrt-AppendRecurringMaybe} which is normally run on
+entry to @code{ledger-mode}. This function does nothing unless
+all the following conditions are met:
+
+@enumerate
+
+@item
+The current buffer is in @code{ledger-mode}.
+
+@item
+The current buffer is unmodified.
+
+@item
+The file associated with the current buffer exists.
+
+@item
+The current file is NOT a recurring transaction config file
+(ie does not have suffix @file{.rec}).
+
+@item
+A recurring transaction config file exists for the current
+ledger file (same directory and basename, but with suffix
+@file{.rec}).
+
+@end enumerate
+
+If all the conditions are met, recurring transactions are
+read from the config file and their dates are compared with
+the current date. 
+
+If a recurring transaction is ``due'' it is appended to the
+ledger file on disk, and its configured date is then shifted
+forward by the configured repetition period, and it is
+written back to the config file with the new date.
+
 
 @node Index
 @chapter Index

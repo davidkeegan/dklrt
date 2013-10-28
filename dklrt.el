@@ -53,11 +53,6 @@ transaction date."
  :tag "dklrt-AppendBefore"
  :type '(string))
 
-(defcustom dklrt-LedgerFileSuffix "ldg"
- "Suffix of Ledger File (excluding period)."
- :tag "dklrt-LedgerFileSuffix"
- :type '(string))
-
 (defcustom dklrt-RecurringConfigFileSuffix "rec"
  "Suffix of Recurring Transactions Config File (excluding period)."
  :tag "dklrt-RecurringConfigFileSuffix"
@@ -80,7 +75,7 @@ To invoke, add this function to `ledger-mode-hook'."
 
 ;;;###autoload
 (defun dklrt-AppendRecurringMaybe()
- "Call `dklrt_AppendRecurring', but only if appropriate."
+ "Call `dklrt-AppendRecurring', but only if appropriate."
  (interactive)
  (if (dklrt-AppendRecurringOk) (dklrt-AppendRecurring)))
 
