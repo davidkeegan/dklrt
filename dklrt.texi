@@ -87,6 +87,20 @@ Foundation GNU Free Documentation Licence.
 @node Getting Started
 @section Getting Started
 
+To append recurring transactions on entry to ledger-mode,
+add this line to your emacs profile:
+
+@lisp
+(add-hook 'ledger-mode-hook 'dklrt-AppendRecurringMaybe)
+@end lisp
+
+To bind \C-cr to dklrt-AppendRecurring in ledger-mode only,
+add this line to your emacs profile (optional).
+
+@lisp
+(add-hook 'ledger-mode-hook 'dklrt-SetCcKeys)
+@end lisp
+
 @node Known Issues
 @section Known Issues
 

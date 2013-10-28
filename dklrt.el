@@ -39,13 +39,12 @@ positioned by date.")
 
 ;DkTbd:
 (or dklrt-PackageDirectory 
- (setq dklrt-PackageDirectory "/opt/dk/emacs/dklrt-20131021.2244/"))
+ (setq dklrt-PackageDirectory "/opt/dk/emacs/dklrt-20131028.821/"))
 
-(defun dklrt-SetKeysAndAppendRecurringMaybe()
-"Bind \C-cr to dklrt-AppendRecurring and call dklrt_AppendRecurringMaybe.
+(defun dklrt-SetCcKeys()
+"Bind \C-cr to dklrt-AppendRecurring.
 To invoke, add this function to ledger-mode-hook."
- (define-key (current-local-map) "\C-cr" 'dklrt-AppendRecurring)
- (dklrt-AppendRecurringMaybe))
+ (define-key (current-local-map) "\C-cr" 'dklrt-AppendRecurring))
 
 (defun dklrt-AppendRecurringMaybe()
 "Call dklrt_AppendRecurring(), but only if appropriate."
