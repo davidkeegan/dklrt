@@ -128,14 +128,17 @@ class Transactions:
       for Line in Af:
          RtNew = Transaction(self, Line)
          if RtNew:
+            # Line is start of new transaction.
             self._Nrt = self._Nrt + 1
             if Rt is not None: self._Rtl.append(Rt)
             Rt = RtNew
          else:
+            # Line does not start a transaction.
             if self._Nrt <= 0:
                # Append to preamble.
                self._Preamble = self._Preamble + Line
             else:
+               # Line continues a transaction.
                Rt.Add(Line)
       if Rt is not None: self._Rtl.append(Rt)
       Af.close()
