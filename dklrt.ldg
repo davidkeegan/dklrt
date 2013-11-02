@@ -18,12 +18,3 @@
 2013-10-19 Payee3
     Liability:CreditCard:Mc                    €5.25
     Expense:Groceries
-
-2013-11-01 Recurring Payee1
-    Asset:Bank:Current                       €-10.00  ; [=2013-11-08]
-    Expense:Phone                             €10.00  ; Payee: Eircom.
-    (Asset:OwedBy:Partner)                    €10.00
-
-2013-11-01 Recurring Payee2
-    Asset:Bank:Savings                       €200.00
-    Expense:SavingPlan

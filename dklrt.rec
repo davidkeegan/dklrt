@@ -1,10 +1,14 @@
+2013-11-08 (1w) Recurring Payee2
+    Asset:Bank:Savings                       €200.00
+    Expense:SavingPlan
+
+2013-12-01 (1m) Recurring Payee3
+    Asset:Bank:Savings                      €1000.00
+    Expense:SavingPlan
+
 2013-12-01 (1m) Recurring Payee1
     ; Transaction Note.
     Asset:Bank:Current                       €-10.00  ; [=2013-11-08]
     Expense:Phone                             €10.00  ; Payee: Eircom.
     (Asset:OwedBy:Partner)                    €10.00
     ; Posting Note2.
-
-2013-11-08 (1w) Recurring Payee2
-    Asset:Bank:Savings                       €200.00
-    Expense:SavingPlan

@@ -32,19 +32,18 @@ class Transaction:
 
    def TransactionText(self):
       """As a string, excluding the period."""
-      return '\n' + self._DateLine(True) + self._RemainderLines()
+      return self._DateLine(True) + self._RemainderLines(True)
 
    def _DateLine(self, ExcludePeriod=False):
       """The Date line."""
       Pt = '' if ExcludePeriod else '%s(%s)' % (self._Ds, self._Period)
       return '%s%s%s' % (self._Date, Pt, self._Al[0])
 
-   def _RemainderLines(self, Exclude=False):
+   def _RemainderLines(self, ExcludeEmpty=False):
       Rv = ''
-      if Exclude:
+      if ExcludeEmpty:
          for Rl in self._Al[1:]:
-            if not re.match(self._ReComment, Rl) and\
-             not re.match(self._ReWhitespace, Rl):
+            if not re.match(self._ReWhitespace, Rl):
                Rv = Rv + Rl
       else:
          Rv = ''.join(self._Al[1:]) 
@@ -71,9 +70,16 @@ class Transaction:
       self._Al.append(Line)
 
    def Generate(self):
-      """Generates transactions up to and including the target date.
-         Returns a list of strings ready for sorting and output to a
-         ledger file.
+      """Generates transaction(s) for the current config entry.
+
+         One transaction per interval up to to and including the
+         target date. In normal operation zero or one transactions are
+         generated, but if processing has been delayed, more than one
+         transaction can be produced.
+         
+         Returns a list of transaction strings ready for sorting and
+         output to a ledger file. Each one begins with a newline to
+         ensure it is separated by an empty line on output.
       """
       Rv = []
       Tdis = self._Parent._Tdis
@@ -82,7 +88,7 @@ class Transaction:
          if self._Dis > Tdis: Done = True
          else:
             # Append transaction text.
-            Rv.append(self.TransactionText())
+            Rv.append('\n' + self.TransactionText())
 
             # Evaluate next posting date.
             NewDis = Time.DateAddPeriod(self._Dis, self._Period)
@@ -142,10 +148,6 @@ class Transactions:
                Rt.Add(Line)
       if Rt is not None: self._Rtl.append(Rt)
       Af.close()
-
-   def _WriteConfig(self):
-      """Saves the current state to the file."""
-      Af = open(self._Cfn, 'w')
 
    def Generate(self):
       """Generates transactions up to and including the target date.
