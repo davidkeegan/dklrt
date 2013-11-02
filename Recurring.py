@@ -32,7 +32,7 @@ class Transaction:
 
    def TransactionText(self):
       """As a string, excluding the period."""
-      return '\n' + self._DateLine(True) + self._RemainderLines(True)
+      return '\n' + self._DateLine(True) + self._RemainderLines()
 
    def _DateLine(self, ExcludePeriod=False):
       """The Date line."""
