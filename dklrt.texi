@@ -125,7 +125,16 @@ transactions.
 
 @enumerate
 @item
-DkTbd: Only ISO Dates are supported: YYYY-MM-DD.
+In the configuration file, transaction dates must be
+expressed in ISO format, eg ``YYYY-MM-DD'' or
+``YYYY/MM/DD'', and this format is preserved when the
+transaction is appended to the ledger file. This is
+compatible with ledger's default date format, and should
+work with ledger-mode.
+
+Problems can be expected if --input-date-format has been
+configured with a non-ISO format in the ledger init file
+(.ledgerrc) or on the ledger command line.
 
 @item
 Depends on some python code which is included in the package
@@ -146,19 +155,34 @@ the same directory as the ledger file, and its filename is
 the same as that of the ledger file except that the ledger
 file suffix is replaced by @file{.rec} (configurable).
 
-A recurring transactions configuration file contains one or
-more transactions in ledger file format, but with the
-following restrictions on the initial (date/payee) line of
-the transaction:
+The configuration file contains one or more transactions in
+ledger file format. I must not contain any of the following
+ledger constructs:
 
 @enumerate
 @item
-The transaction date must be in ISO format: YYYY-MM-DD.
-DkTbd.
+Stand-alone comment (ie not part of a transaction).
 
 @item
-Automated transactions (beginning with ``='' are not
-supported.
+Historical commodity price (starts with ``P'').
+
+@item
+Automated transaction (starts with ``='').
+
+@item
+Period transaction (starts with ``~'').
+
+@item
+Command directive.
+@end enumerate
+
+In addition the following rules apply to the the initial
+(date/payee) line of each transaction:
+
+@enumerate
+@item
+The transaction date must be in ISO format: ``YYYY-MM-DD'' or
+``YYYY/MM/DD''.
 
 @item
 Auxiliary dates (date1=date2) are not supported.
@@ -190,7 +214,6 @@ A single character from the following y (year), m (month) w
 (week), d (day), specifying the period unit and following
 immediately after the integer without intervening space.
 @end table
-
 @end enumerate
 
 @node Operations
