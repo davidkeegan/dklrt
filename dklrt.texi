@@ -67,12 +67,6 @@ Foundation GNU Free Documentation Licence.
 @top Ledger Recurring Transactions
 @end ifnottex
 
-An add-on to ledger-mode which appends recurring
-transactions to the current ledger file, usually on entry to
-ledger-mode. Recurring transactions are configured in a
-separate file which conforms to ledger file format and
-resides in the same directory as the ledger file.
-
 @menu
 * Introduction::
 * Configuration File::
@@ -83,32 +77,43 @@ resides in the same directory as the ledger file.
 @node Introduction
 @chapter Introduction
 
+An add-on to emacs ledger-mode which appends recurring
+transactions to the current ledger file, usually on entry to
+ledger-mode. Recurring transactions are configured in a
+separate file which conforms to ledger file format and
+resides in the same directory as the ledger file.
+
+@menu
+* Overview::
+* Getting Started::
+* Known Issues::
+* History::
+@end menu
+
+@node Overview
+@section Overview
+
 @cindex recurring transactions
 @cindex transactions, recurring
 @pindex ledger
 Recurring transactions are accounting transactions that
 repeat at regular intervals such as paychecks, standing
 orders, and pension contributions. This emacs package
-appends recurring transactions to a ledger file, the input
-file for John Wiegley's ledger program. @xref{Top,,
-Overview, ledger3, Ledger: Command-Line Accounting}.
+facilitates entry of recurring transactions to a ledger
+file, the input file for John Wiegley's ledger program.
+@xref{Top,, Overview, ledger3, Ledger: Command-Line
+Accounting}.
 
 @findex @code{ledger-mode}
-An add-on to emacs ledger-mode, the package appends
-recurring transactions to the current ledger file, usually
-on entry to @code{ledger-mode}. @xref{Top,,Overview,
+Operating as an add-on to emacs ledger-mode, the package
+appends recurring transactions to the current ledger file,
+usually on entry to @code{ledger-mode}. @xref{Top,,Overview,
 ledger-mode, Ledger Mode}.
 
 @cindex configuration file
 Recurring transactions are configured in a separate file
 which conforms to ledger file format, and resides in the
 same directory as the ledger file. @xref{Configuration File}.
-
-@menu
-* Getting Started::
-* Known Issues::
-* History::
-@end menu
 
 @node Getting Started
 @section Getting Started
@@ -133,11 +138,24 @@ To bind @kbd{\C-cr} to @code{dklrt-AppendRecurringMaybe} while in
 If you want to have recurring transactions positioned by date in
 the ledger file, add this line to your emacs profile (optional):
 
+@lisp
 (setq dklrt-SortAfterAppend t)
+@end lisp
 
 Note that as this causes the whole ledger buffer to be
-sorted after transactions are appended, it affects the
-positions of all transactions.
+sorted after transactions are appended, it potentially
+affects the positions of all transactions.
+
+Finally as the recurring transactions configuration file is
+a valid ledger file you may wish to edit it in
+@code{ledger-mode}. If so add this to your emacs profile (optional):
+
+@lisp
+
+(add-to-list 'auto-mode-alist '("\\.rec$" . ledger-mode))
+
+@end lisp
+
 
 @node Known Issues
 @section Known Issues
@@ -146,30 +164,30 @@ positions of all transactions.
 @cindex limitations
 @enumerate
 @item
-In the configuration file, a transaction date must be
-expressed in ISO format, eg ``YYYY-MM-DD'' or
-``YYYY/MM/DD''. This format is preserved when the
-transaction is appended to the ledger file. It is compatible
-with ledger's default date format, and should work with
-@code{ledger-mode}.
+In the recurring transactions configuration file, a
+transaction date must be expressed in ISO format, eg
+``YYYY-MM-DD'' or ``YYYY/MM/DD''. This format is preserved
+when the transaction is appended to the ledger file. It is
+compatible with ledger's default date format, and should
+work with @code{ledger-mode}.
 
 Problems can be expected if --input-date-format has been
 configured with a non-ISO format in the ledger init file
 (.ledgerrc) or on the ledger command line.
-@xref{Configuration File}.
 
 @vindex @code{dklrt-PythonProgram}
 @item
-Depends on some python code which is included in the package
-(and requires that python is installed on the system). The
-python program is customisable via variable
+The emacs code depends on some python code which is included
+in the package (and requires that python is installed on the
+system). The python executable is customisable via variable
 @code{dklrt-PythonProgram}.
 @end enumerate
 
 @node History
 @section History
 
-This package was developed between 2011-06-08 and 2011-08-17.
+This package was developed mostly between 2011-06-08 and
+2011-08-17.
 
 @node Configuration File
 @chapter Configuration File
@@ -223,8 +241,8 @@ at the beginning of a line, and includes the remainder of
 the line and all subsequent lines up to but excluding the
 next transaction date. The transaction date in the
 configuration file controls when the transaction becomes due
-for appending to the ledger file, and is the actual
-transaction date once appended.
+for appending to the ledger file, and becomes the actual
+date of the appended transaction.
 
 @node Date and Period
 @section Date and Period
@@ -232,9 +250,7 @@ transaction date once appended.
 @cindex transaction date
 @cindex date, transaction
 The transaction date must be in ISO format: ``YYYY-MM-DD''
-or ``YYYY/MM/DD''. It occurs at the beginning of a line and
-marks the start of a transaction (and the end of the
-previous transaction, if any).
+or ``YYYY/MM/DD''.
 
 @cindex repetition period
 @cindex repetition interval
@@ -324,22 +340,30 @@ The current buffer is in @code{ledger-mode}.
 The current buffer is unmodified.
 
 @item
-The file associated with the current buffer exists.
+The ledger file associated with the current buffer exists.
 
 @item
-The current file is @emph{not} a recurring transaction config file
-(ie does not have suffix @file{.rec}).
+The current file is @emph{not} a recurring transaction
+configuration file (ie does not have suffix @file{.rec}).
 
 @item
-A recurring transaction config file exists for the current
-ledger file (same directory and basename, but with suffix
-@file{.rec}).
+A recurring transaction configuration file exists for the
+current ledger file (same directory and basename, but with
+suffix @file{.rec}).
 
 @end enumerate
 
 If all the conditions are met, recurring transactions are
-read from the config file and their dates are compared with
-the current date.
+read from the configuration file and their dates are
+compared with the current date to determine if they are
+``due''.
+
+@cindex append due time
+@cindex due time, append
+@vindex @code{dklrt-AppendBefore}
+By default, a recurring transaction becomes due up to one
+day before its transaction date. This is customisable via
+variable @code{dklrt-AppendBefore}.
 
 @cindex appended transaction
 @cindex transaction, appended
@@ -347,19 +371,15 @@ If a transaction is considered ``due'', it is appended to
 the ledger file. The append includes the full transaction
 text as it appears in the configuration file, except that
 the repetition period (including enclosing parentheses) is
-removed.
+removed. The configuration file transaction date is then
+shifted forward by the repetition period and again compared
+with the current date. If the recurring transaction is still
+``due'', it is appended again to the ledger file. The
+process repeats until the recurring transaction is no longer
+``due''.
 
-Once a recurring transaction has been appended to the ledger
-file, the transaction date is shifted forward by the
-repetition period to the date of the next append and written
-back to the configuration file. @xref{Configuration File}.
-
-@cindex append due time
-@cindex due time, append
-@vindex @code{dklrt-AppendBefore}
-By default, a recurring transaction becomes due up to one
-day before its current transaction date. This is
-customisable via variable @code{dklrt-AppendBefore}.
+Finally the recurring transaction is written back to the
+configuration file with its new transaction date.
 
 @cindex sort transactions
 @vindex @code{dklrt-SortAfterAppend}
