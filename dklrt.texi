@@ -83,16 +83,6 @@ resides in the same directory as the ledger file.
 @node Introduction
 @chapter Introduction
 
-@menu
-* Overview::
-* Getting Started::
-* Known Issues::
-* History::
-@end menu
-
-@node Overview
-@section Overview
-
 @cindex recurring transactions
 @cindex transactions, recurring
 @pindex ledger
@@ -114,10 +104,15 @@ Recurring transactions are configured in a separate file
 which conforms to ledger file format, and resides in the
 same directory as the ledger file. @xref{Configuration File}.
 
+@menu
+* Getting Started::
+* Known Issues::
+* History::
+@end menu
+
 @node Getting Started
 @section Getting Started
 
-@findex @code{dklrt-AppendRecurringMaybe}
 To append recurring transactions automatically on entry to
 @code{ledger-mode}, add this line to your emacs profile:
 
