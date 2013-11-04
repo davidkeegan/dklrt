@@ -19,7 +19,7 @@
 ;;; Code:
 
 (require 'dkmisc)
-(require 'ledger "ledger-mode")
+(require 'ledger-mode)
 
 ;;;###autoload
 (defgroup dklrt nil
