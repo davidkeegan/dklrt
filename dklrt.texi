@@ -87,7 +87,7 @@ resides in the same directory as the ledger file.
 * Overview::
 * Getting Started::
 * Known Issues::
-* History::
+* History and Changes::
 @end menu
 
 @node Overview
@@ -183,11 +183,16 @@ system). The python executable is customisable via variable
 @code{dklrt-PythonProgram}.
 @end enumerate
 
-@node History
-@section History
+@node History and Changes
+@section History and Changes
 
-This package was developed mostly between 2011-06-08 and
+Package dklrt was developed mostly between 2011-06-08 and
 2011-08-17.
+
+@table @asis
+@item Version 1.0 20131104:
+Initial release as package.
+@end table
 
 @node Configuration File
 @chapter Configuration File
