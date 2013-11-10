@@ -2,7 +2,7 @@
 
 @c %**start of header
 @setfilename dklrt.info
-@settitle Ledger Recurring Transactions 1.0
+@settitle Ledger Recurring Transactions 1.00
 @c %**end of header
 
 @syncodeindex fn cp
@@ -15,7 +15,7 @@
 @c updates the node pointers, which texinfmt.el needs.
 
 @copying
-This manual is for emacs package dklrt version 1.0.
+This manual is for emacs package dklrt version 1.00.
 
 Copyright @copyright{} 2010–2013 David Keegan.
 
@@ -54,7 +54,7 @@ Foundation GNU Free Documentation Licence.
 @end macro
 
 @titlepage
-@title Ledger Recurring Transactions 1.0
+@title Ledger Recurring Transactions 1.00
 @author David Keegan
 @page
 @vskip 0pt plus 1filll
@@ -190,7 +190,7 @@ Package dklrt was developed mostly between 2011-06-08 and
 2011-08-17.
 
 @table @asis
-@item Version 1.0 20131104:
+@item Version 1.00 20131104:
 Initial release as package.
 @end table
 

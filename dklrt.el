@@ -3,8 +3,8 @@
 ;; Copyright: (c) David Keegan 2011-2013.
 ;; Licence: FSF GPLv3.
 ;; Author: David Keegan <dksw@eircom.net>
-;; Version: 1.0
-;; Package-Requires: ((dkmisc "0.5") (ledger-mode "20130908.1357") (emacs "24.1"))
+;; Version: 1.00
+;; Package-Requires: ((dkmisc "0.50") (ledger-mode "20130908.1357") (emacs "24.1"))
 ;; Keywords: ledger ledger-cli recurring periodic automatic
 ;; URL: https://github.com/davidkeegan/dklrt
 

@@ -1,3 +1,3 @@
-(define-package "dklrt" "1.0"
+(define-package "dklrt" "1.00"
  "Ledger Recurring Transactions."
- '((dkmisc "0.5") (ledger-mode "20130908.1357") (emacs "24.1")))
+ '((dkmisc "0.50") (ledger-mode "20130908.1357") (emacs "24.1")))
