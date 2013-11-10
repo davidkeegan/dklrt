@@ -148,7 +148,8 @@ affects the positions of all transactions.
 
 Finally as the recurring transactions configuration file is
 a valid ledger file you may wish to edit it in
-@code{ledger-mode}. If so add this to your emacs profile (optional):
+@code{ledger-mode}. If so add this to your emacs profile
+(optional):
 
 @lisp
 
@@ -174,6 +175,29 @@ work with @code{ledger-mode}.
 Problems can be expected if --input-date-format has been
 configured with a non-ISO format in the ledger init file
 (.ledgerrc) or on the ledger command line.
+
+@item
+The handling if repetition intervals specified in the
+configuration file with unit @code{m} (month) or @code{y}
+(year) is not ideal when their application results in an
+invalid calendar day or a potentially invalid day. In these
+situations, the configured day is adjusted back to @code{28}
+to ensure validity, and remains at @code{28} for all future
+recurrences.
+
+For example, a monthly recurring transaction initially
+configured as @emph{Jan 31} in the configuration file
+produces recurrences in the ledger file of @emph{Jan 31},
+@emph{Feb 28}, @emph{Mar 28}, @emph{Apr 28}, and so on.
+
+Ideally day 31 should be preserved in the configuration file
+(perhaps in a comment), and the days emitted to the ledger
+file should be as close as possible to 31 as the calendar
+permits.
+
+Note that the current implementation does ensure that only
+valid calendar dates occur in both the configuration and
+ledger files.
 
 @vindex @code{dklrt-PythonProgram}
 @item
@@ -268,19 +292,37 @@ in the following format:
 
 @verbatim
 (<Count><Unit>)
-@end verbatim
 
 Where:
+@end verbatim
 
 @table @code
 @item Count
 An unsigned decimal integer.
 
 @item Unit
-A single character from the following: y (year), m (month) w
-(week), d (day), specifying the period unit and following
-immediately after the Count integer without intervening
-space.
+A single character specifying a unit and following
+immediately after @code{Count} without intervening space.
+The following values are accepted for @code{Unit}:
+
+@table @code
+
+@item d
+A fixed interval of @code{Count} days.
+
+@item w
+A fixed interval @code{Count} weeks.
+
+@item m
+The interval to the same day @code{Count} months later, but
+if this results in an invalid calendar day (eg Feb 31), the
+day is shifted back until valid (eg to Feb 28).
+
+@item y
+The interval to the same day and month @code{Count} years
+later, but if this results in an invalid calendar day (eg
+Feb29), the day is shifted back until valid (eg to Feb 28).
+@end table
 @end table
 
 @node Restrictions
