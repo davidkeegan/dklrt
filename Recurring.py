@@ -49,7 +49,7 @@ class Transaction:
          Rv = ''.join(self._Al[1:]) 
       return Rv
 
-   def __nonzero__(self):
+   def __bool__(self):
       return self._Date is not None
 
    def _Log(self, Msg): Misc.Log(Msg, self)
