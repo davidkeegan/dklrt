@@ -2,7 +2,6 @@
 # Miscellaneous Utilities (dklrt).
 # (c) David Keegan 2011-06-28.
 
-from __future__ import print_function
 import sys
 
 def Out(*Args):

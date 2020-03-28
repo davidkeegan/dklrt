@@ -60,7 +60,7 @@ def DateAddYears(Seconds, Count):
       If Seconds is Feb 29, shifts to Feb 28, even if shifing to a
       leap year.
    """
-   if not isinstance(Count, (int, long)):
+   if not isinstance(Count, int):
       _Throw("Count argument not an int!")
 
    dtd = datetime.date.fromtimestamp(Seconds)
@@ -74,14 +74,14 @@ def DateAddMonths(Seconds, Count):
    """Shifts Seconds (a date) forward by Count months.
       If the day is >= 29, shifts to 28.
    """
-   if not isinstance(Count, (int, long)):
+   if not isinstance(Count, int):
       _Throw("Count argument not an int!")
 
    dtd = datetime.date.fromtimestamp(Seconds)
    if not Count == 0:
       if dtd.day >= 29: dtd = dtd.replace(day=28)
       Month = (dtd.month + Count) - 1
-      Years = Month / 12
+      Years = Month // 12
       dtd = dtd.replace(year=(dtd.year + Years))
       Month = (Month % 12) + 1
       dtd = dtd.replace(month=Month)
